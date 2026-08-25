@@ -1,0 +1,99 @@
+<div class="overflow-x-auto">
+    <table class="w-full text-left text-xs text-slate-300">
+        <thead class="bg-slate-900/90 text-slate-400 font-semibold uppercase tracking-wider text-[11px] border-b border-slate-800">
+            <tr>
+                <th class="py-3 px-4">Claimed Entity & Job Title</th>
+                <th class="py-3 px-4">Scam Category</th>
+                <th class="py-3 px-4">Domain / Phone</th>
+                <th class="py-3 px-4">Risk Level</th>
+                <th class="py-3 px-4">Ghost Repost Metrics</th>
+                <th class="py-3 px-4">Credibility Vote</th>
+                <th class="py-3 px-4">Date</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60">
+            {% if reports %}
+                {% for r in reports %}
+                    <tr class="hover:bg-slate-800/40 transition-colors">
+                        <td class="py-3.5 px-4">
+                            <div class="font-bold text-white text-sm">
+                                {{ r.company_name_claimed or 'Unspecified Organization' }}
+                            </div>
+                            {% if r.job_title %}
+                                <div class="text-xs text-purple-300 font-medium">
+                                    <i class="fa-solid fa-briefcase mr-1 text-[10px]"></i>{{ r.job_title }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            {% if r.scam_type == 'ghost_listing' %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-900/60 text-purple-300 border border-purple-700/50 uppercase">
+                                    <i class="fa-solid fa-ghost mr-1"></i>Ghost Listing
+                                </span>
+                            {% elif r.scam_type == 'fee_scam' %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-red-900/60 text-red-300 border border-red-700/50 uppercase">
+                                    <i class="fa-solid fa-money-bill-wave mr-1"></i>Fee Scam
+                                </span>
+                            {% else %}
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-900/60 text-amber-300 border border-amber-700/50 uppercase">
+                                    Phishing
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-4 font-mono text-slate-200">
+                            {% if r.domain %}
+                                <div class="text-sky-400 text-xs truncate max-w-[140px]">
+                                    <i class="fa-solid fa-globe mr-1 text-[10px]"></i>{{ r.domain }}
+                                </div>
+                            {% endif %}
+                            {% if r.phone_number %}
+                                <div class="text-amber-300 text-xs mt-0.5">
+                                    <i class="fa-solid fa-phone text-[10px] mr-1"></i>{{ r.phone_number }}
+                                </div>
+                            {% endif %}
+                            {% if not r.domain and not r.phone_number %}
+                                <span class="text-slate-500 italic">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            {% if r.risk_score == 'high' %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-red-500/20 text-red-300 border border-red-500/30 uppercase">
+                                    High
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase">
+                                    Medium
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            {% if r.scam_type == 'ghost_listing' %}
+                                <div class="text-[11px] text-slate-300">
+                                    <span class="font-bold text-purple-300">Ghost Listing</span>
+                                    <span class="block text-slate-400 text-[10px]">Flagged data harvesting</span>
+                                </div>
+                            {% else %}
+                                <span class="text-slate-500 text-[11px]">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            {% with report=r %}
+                                {% include "partials/vote_buttons.html" %}
+                            {% endwith %}
+                        </td>
+                        <td class="py-3.5 px-4 text-slate-400 font-mono text-[11px] whitespace-nowrap">
+                            {{ r.created_at.strftime('%Y-%m-%d') if r.created_at else 'Recent' }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-slate-500">
+                        <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
+                        No reported scam entries found matching your search.
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>

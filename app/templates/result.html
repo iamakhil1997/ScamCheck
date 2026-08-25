@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Scam Report #{{ report.id }} - ScamCheck{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8 space-y-6">
+
+    <div class="flex items-center justify-between">
+        <a href="/community" class="text-xs text-sky-400 hover:underline flex items-center space-x-1 font-semibold">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Community Database</span>
+        </a>
+        <span class="text-xs font-mono text-slate-500">Report ID: #{{ report.id }}</span>
+    </div>
+
+    <!-- Report Main Card -->
+    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    {% if report.risk_score == 'high' %}
+                        <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-red-500 text-white uppercase">
+                            HIGH RISK
+                        </span>
+                    {% elif report.risk_score == 'medium' %}
+                        <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500 text-slate-950 uppercase">
+                            MEDIUM RISK
+                        </span>
+                    {% else %}
+                        <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500 text-white uppercase">
+                            LOW RISK
+                        </span>
+                    {% endif %}
+                    <span class="text-xs text-slate-400">Reported on {{ report.created_at.strftime('%Y-%m-%d') if report.created_at else 'Recently' }}</span>
+                </div>
+                <h1 class="text-2xl font-bold text-white">
+                    {{ report.company_name_claimed or 'Reported Job Scam' }}
+                </h1>
+            </div>
+
+            <!-- Upvote / Downvote buttons -->
+            {% include "partials/vote_buttons.html" with context %}
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            {% if report.domain %}
+                <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                    <span class="text-slate-400 block mb-1">Associated Domain</span>
+                    <span class="font-bold font-mono text-sky-400 text-sm break-all">{{ report.domain }}</span>
+                </div>
+            {% endif %}
+
+            {% if report.phone_number %}
+                <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                    <span class="text-slate-400 block mb-1">Scammer Phone Number</span>
+                    <span class="font-bold font-mono text-amber-300 text-sm">{{ report.phone_number }}</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Submitted Text -->
+        <div class="space-y-2">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Reported Message / Offer Content</h4>
+            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed">
+                {{ report.submitted_text }}
+            </div>
+        </div>
+
+        <!-- Explanation & Red Flags -->
+        {% if report.explanation %}
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1">
+                <h5 class="font-bold text-white">Assessment Note:</h5>
+                <p class="text-slate-300 leading-relaxed">{{ report.explanation }}</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

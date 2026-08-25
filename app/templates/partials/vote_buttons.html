@@ -1,0 +1,22 @@
+<div id="vote-buttons-{{ report.id }}" class="flex items-center space-x-2">
+    <button type="button" 
+            hx-post="/community/{{ report.id }}/vote-htmx" 
+            hx-vals='{"vote": "upvote"}'
+            hx-target="#vote-buttons-{{ report.id }}"
+            hx-swap="outerHTML"
+            class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-semibold flex items-center space-x-1 transition-colors">
+        <i class="fa-solid fa-thumbs-up"></i>
+        <span>{{ report.upvotes }}</span>
+        <span class="hidden sm:inline text-[10px] text-slate-400">("I got this too")</span>
+    </button>
+    
+    <button type="button" 
+            hx-post="/community/{{ report.id }}/vote-htmx" 
+            hx-vals='{"vote": "downvote"}'
+            hx-target="#vote-buttons-{{ report.id }}"
+            hx-swap="outerHTML"
+            class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-red-400 border border-slate-700 text-xs font-semibold flex items-center space-x-1 transition-colors">
+        <i class="fa-solid fa-thumbs-down"></i>
+        <span>{{ report.downvotes }}</span>
+    </button>
+</div>
