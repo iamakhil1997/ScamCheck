@@ -1,14 +1,20 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.config import settings
 
-# Database connection configuration
+db_url = settings.DATABASE_URL
+
+# Vercel serverless environment check: Use /tmp directory for SQLite on read-only serverless filesystems
+if os.environ.get("VERCEL") or (db_url.startswith("sqlite:///") and db_url == "sqlite:///./scamcheck.db"):
+    db_url = "sqlite:////tmp/scamcheck.db"
+
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_engine(
-    settings.DATABASE_URL,
+    db_url,
     connect_args=connect_args,
     echo=False
 )

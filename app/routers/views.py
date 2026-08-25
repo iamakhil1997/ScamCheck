@@ -15,7 +15,10 @@ from app.services.crowdsource import mask_phone_number
 
 router = APIRouter(tags=["HTML Views"])
 
-templates = Jinja2Templates(directory="app/templates")
+# Absolute path resolution for Vercel Serverless environment
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+templates_dir = os.path.join(BASE_DIR, "app", "templates")
+templates = Jinja2Templates(directory=templates_dir)
 
 @router.get("/", response_class=HTMLResponse)
 def index_page(request: Request):
